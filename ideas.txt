@@ -1,0 +1,4 @@
+- Different filetypes for images
+- Integrate with discogs api
+- Choose what information to extract from images/discogs using parameters
+- Add records to your discogs profile automatically
