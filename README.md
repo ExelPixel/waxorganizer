@@ -5,4 +5,9 @@ Required libraries:
 
 pip install opencv-python
 pip install pytesseract
+
+Windows:
 https://github.com/UB-Mannheim/tesseract/wiki -> Tesseract OCR
+Download using installer then add destination to path variable
+
+https://www.geeksforgeeks.org/python/text-detection-and-extraction-using-opencv-and-ocr/
