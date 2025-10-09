@@ -3,7 +3,7 @@ from imageProcessor import runImageProcessor
 
 #def loadParamsFromFile():
 
-debuggingMode = False
+debuggingMode = True
 
 # imageDirectory = os.fsencode("Input images/")
 

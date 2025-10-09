@@ -1,7 +1,7 @@
 import cv2
 import pytesseract
 from matplotlib import pyplot as plt
-from imageSkewing import deskew
+# from imageSkewing import deskew
 
 # cv2.imshow("Debugging", image_gray)
 # cv2.resize(image_gray, None, None, fx=2, fy=2, interpolation=INTER_AREA) #experiment with different interpolation
@@ -13,11 +13,15 @@ def loadImage(imageName):
     assert image is not None, "file could not be read, check if it exists in the directory"
     #Adjust image
     grayImage = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    thresh, im_bw = cv2.threshold(grayImage, 170, 220, cv2.THRESH_BINARY) #, 170, 220
-    # adjustedImage = deskew(im_bw)
+    # rgbImage = cv2.cvtColor(image, cv2.COLOR_BAYER_BG2RGB)
+    # thresh, im_bw = cv2.threshold(image, 170, 220, cv2.THRESH_BINARY) #, 170, 220
+    adjustedImage = deskew(image)
     
-    cv2.imwrite("Output text/testimg.jpg", im_bw)
-    return im_bw
+    # cv2.imwrite("Output text/testimg.jpg", adjustedImage)
+    return adjustedImage
+
+def deskew(image):
+    return image
 
 def debuggingImage(image):
     data = pytesseract.image_to_data(image, output_type=pytesseract.Output.DICT)
@@ -61,6 +65,9 @@ def getCatalogueNum(imageGray, debuggingMode):
     else:
         return catalogueNumber
     
+def hasSpecialChar():
+    pass
+
 def runImageProcessor(imageName, debuggingMode):
     imageGray = loadImage(imageName)
     if debuggingMode: debuggingImage(imageGray)

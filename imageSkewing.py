@@ -14,19 +14,29 @@ def getSkewAngle(cvImage) -> float:
     # Apply dilate to merge text into meaningful lines/paragraphs.
     # Use larger kernel on X axis to merge characters into single line, cancelling out any spaces.
     # But use smaller kernel on Y axis to separate between different blocks of text
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (30, 5))
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
     dilate = cv2.dilate(thresh, kernel, iterations=5)
 
     # Find all contours
     contours, hierarchy = cv2.findContours(dilate, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
     contours = sorted(contours, key = cv2.contourArea, reverse = True)
 
-    # Find largest contour and surround in min area box
-    largestContour = contours[0]
-    minAreaRect = cv2.minAreaRect(largestContour)
-
-    # Determine the angle. Convert it to the value that was originally used to obtain skewed image
-    angle = minAreaRect[-1]
+    # Use the angle of the middle contour only
+    if not contours:
+        return 0.0
+    allContourAngles = [cv2.minAreaRect(c)[-1] for c in contours]
+    if not allContourAngles:
+        return 0.0
+    avg_angle = sum(allContourAngles) / len(allContourAngles)
+    # Normalize angle if needed
+    if avg_angle < -45:
+        avg_angle = 90 + avg_angle
+    # Only rotate if average angle is within -45 to 45 degrees
+    if -45 <= avg_angle <= 45:
+        return -1.0 * avg_angle
+    else:
+        return 0.0
+    # Normalize angle if needed
     if angle < -45:
         angle = 90 + angle
     return -1.0 * angle
