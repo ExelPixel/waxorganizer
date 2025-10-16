@@ -3,7 +3,7 @@ from imageProcessor import runImageProcessor
 
 #def loadParamsFromFile():
 
-debuggingMode = True
+debuggingMode = False
 
 # imageDirectory = os.fsencode("Input images/")
 
@@ -13,5 +13,5 @@ debuggingMode = True
 #     print(catNum)
 
 # For testing individual cases
-catNum = runImageProcessor("20250922_215001.jpg", debuggingMode)
+catNum = runImageProcessor("20250923_202856.jpg", debuggingMode)
 print(catNum)

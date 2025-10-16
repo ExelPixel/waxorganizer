@@ -1,6 +1,7 @@
 import cv2
 import pytesseract
 from matplotlib import pyplot as plt
+from CircleDetection import main as detectCircle
 # from imageSkewing import deskew
 
 # cv2.imshow("Debugging", image_gray)
@@ -21,6 +22,9 @@ def loadImage(imageName):
     return adjustedImage
 
 def deskew(image):
+
+    detectCircle(image)
+
     return image
 
 def debuggingImage(image):
