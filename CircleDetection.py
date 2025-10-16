@@ -3,36 +3,31 @@ import cv2 as cv
 import numpy as np
 def main(imageInput):
     
-    # default_file = 'smarties.png'
-    # filename = argv[0] if len(argv) > 0 else default_file
-    # # Loads an image
-    # src = cv.imread(cv.samples.findFile(filename), cv.IMREAD_COLOR)
-    # # Check if image is loaded fine
-
     src = imageInput
+
+    height, width, _ = src.shape
+    newWidth = int(width * 0.3)
+    newHeight = int(height * 0.3)
+    resized = cv.resize(src, (newWidth, newHeight), interpolation=cv.INTER_AREA)
 
     if src is None:
         print ('Error opening image!')
-        print ('Usage: hough_circle.py [image_name -- default ' '] \n')
-        return -1
-    
+        return -1 #TODO: Change this
     
     gray = cv.cvtColor(src, cv.COLOR_BGR2GRAY)
-    
-    
     gray = cv.medianBlur(gray, 5)
-    
-    
-    rows = gray.shape[0]
+    # gray = cv.GaussianBlur(gray, 7, 1.5, 1.5) 
+
+    imgHeigth, imgWidth = gray.shape
     # https://docs.opencv.org/4.x/dd/d1a/group__imgproc__feature.html#ga47849c3be0d0406ad3ca45db65a25d2d params
     circles = cv.HoughCircles(
         gray,
         cv.HOUGH_GRADIENT,
-        dp=8,
-        minDist=rows,
-        param1=100,
-        param2=50,
-        minRadius=500,
+        dp=5,
+        minDist=imgHeigth,
+        param1=300,
+        param2=1,
+        minRadius=int(imgWidth/4),
         maxRadius=0
     )
     

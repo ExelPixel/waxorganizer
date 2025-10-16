@@ -13,6 +13,7 @@ def loadImage(imageName):
     image = cv2.imread(image_path)
     assert image is not None, "file could not be read, check if it exists in the directory"
     #Adjust image
+
     grayImage = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # rgbImage = cv2.cvtColor(image, cv2.COLOR_BAYER_BG2RGB)
     # thresh, im_bw = cv2.threshold(image, 170, 220, cv2.THRESH_BINARY) #, 170, 220
