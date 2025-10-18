@@ -1,0 +1,2 @@
+debugCircleDetection = True
+debugOCR = False

@@ -3,15 +3,25 @@ from imageProcessor import runImageProcessor
 
 #def loadParamsFromFile():
 
-debuggingMode = False
-
 imageDirectory = os.fsencode("Input images/")
 
-for file in os.listdir(imageDirectory):
-    filename = os.fsdecode(file)
-    catNum = runImageProcessor(filename, debuggingMode)
+def runOneFile(fileName):
+    # For testing individual cases
+    catNum = runImageProcessor("20251018_190742.jpg")
     print(catNum)
 
-# For testing individual cases
-# catNum = runImageProcessor("eaab6e043690f3001cda3226f7d2801898bb0383f526d626c24f7935827b3249.jpg", debuggingMode)
-print(catNum)
+def runAllFiles():
+    fileCount = 0
+    foundCount = 0
+    for file in os.listdir(imageDirectory):
+        filename = os.fsdecode(file)
+        catNum = runImageProcessor(filename, debuggingMode)
+        if catNum is not None: 
+            foundCount += 1
+            print(catNum)
+        fileCount += 1
+
+    print(f"Found {foundCount} of {fileCount} catalogueNumbers")
+
+runOneFile("20251018_190742.jpg")
+# runAllFiles()

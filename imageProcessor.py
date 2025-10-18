@@ -1,5 +1,6 @@
 import cv2
 import pytesseract
+import config as cfg
 from matplotlib import pyplot as plt
 from CircleDetection import main as detectCircle
 # from imageSkewing import deskew
@@ -13,18 +14,22 @@ def loadImage(imageName):
     image = cv2.imread(image_path)
     assert image is not None, "file could not be read, check if it exists in the directory"
     #Adjust image
-
     grayImage = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    # rgbImage = cv2.cvtColor(image, cv2.COLOR_BAYER_BG2RGB)
-    # thresh, im_bw = cv2.threshold(image, 170, 220, cv2.THRESH_BINARY) #, 170, 220
-    adjustedImage = deskew(image)
+    alpha = 1.5  # Contrast control
+    beta = -50    # Brightness control
+    contrast = cv2.convertScaleAbs(grayImage, alpha = alpha, beta = beta)
+    adjustedImage = deskew(contrast)
     
     # cv2.imwrite("Output text/testimg.jpg", adjustedImage)
     return adjustedImage
 
 def deskew(image):
-
-    detectCircle(image)
+    circles = detectCircle(image)
+    print(circles)
+    # circle = circles[0]
+    # center = (circle[0], circle[1])
+    # radius = circle[2]
+    # print(center, radius)
 
     return image
 
@@ -42,13 +47,13 @@ def debuggingImage(image):
     plt.axis("off")
     plt.show()
 
-def extractText(image, debuggingMode):
+def extractText(image):
     extracted_text = pytesseract.image_to_string(image)
-    if debuggingMode: print(f" Extracted Text:\n {extracted_text}")
+    if cfg.debugOCR: print(f" Extracted Text:\n {extracted_text}")
     return extracted_text
 
-def getCatalogueNum(imageGray, debuggingMode):
-    text = extractText(imageGray, debuggingMode)
+def getCatalogueNum(imageGray):
+    text = extractText(imageGray)
     newLines = text.replace(" ", "").split("\n")
     catalogueNumber = None
 
@@ -66,14 +71,14 @@ def getCatalogueNum(imageGray, debuggingMode):
             catalogueNumber = line
 
     if catalogueNumber == None:
-        return "No catalogue number was found"
+        return None
     else:
         return catalogueNumber
     
 def hasSpecialChar():
     pass
 
-def runImageProcessor(imageName, debuggingMode):
+def runImageProcessor(imageName):
     imageGray = loadImage(imageName)
-    if debuggingMode: debuggingImage(imageGray)
-    return getCatalogueNum(imageGray, debuggingMode)
+    if cfg.debugOCR: debuggingImage(imageGray)
+    return getCatalogueNum(imageGray)

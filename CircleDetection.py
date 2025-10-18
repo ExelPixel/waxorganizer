@@ -1,21 +1,20 @@
 import sys
 import cv2 as cv
+import config as cfg
 import numpy as np
 def main(imageInput):
     
     src = imageInput
 
-    height, width, _ = src.shape
-    newWidth = int(width * 0.3)
-    newHeight = int(height * 0.3)
-    resized = cv.resize(src, (newWidth, newHeight), interpolation=cv.INTER_AREA)
-
     if src is None:
         print ('Error opening image!')
         return -1 #TODO: Change this
-    
-    gray = cv.cvtColor(src, cv.COLOR_BGR2GRAY)
-    gray = cv.medianBlur(gray, 5)
+
+    height, width = src.shape
+    newWidth = int(width * 0.5)
+    newHeight = int(height * 0.5)
+    resized = cv.resize(src, (newWidth, newHeight), interpolation=cv.INTER_AREA)
+    gray = cv.medianBlur(resized, 5)
     # gray = cv.GaussianBlur(gray, 7, 1.5, 1.5) 
 
     imgHeigth, imgWidth = gray.shape
@@ -31,23 +30,21 @@ def main(imageInput):
         maxRadius=0
     )
     
-    
-    if circles is not None:
+    assert circles is not None, "no label was found"
+
+    if cfg.debugCircleDetection:
         circles = np.uint16(np.around(circles))
         for i in circles[0, :]:
             center = (i[0], i[1])
             # circle center
-            cv.circle(src, center, 1, (0, 100, 100), 3)
+            cv.circle(resized, center, 1, (0, 100, 100), 3)
             # circle outline
             radius = i[2]
-            cv.circle(src, center, radius, (255, 0, 255), 3)
+            cv.circle(resized, center, radius, (255, 0, 255), 3)
+        
+        cv.namedWindow("detected circles", cv.WINDOW_NORMAL)
+        cv.resizeWindow("detected circles", 600, 800)
+        cv.imshow("detected circles", resized)
+        cv.waitKey(0)
     
-    
-    cv.namedWindow("detected circles", cv.WINDOW_NORMAL)  # allows resizing
-    cv.resizeWindow("detected circles", 600, 800)         # set desired size (width, height)
-    cv.imshow("detected circles", src)
-    cv.waitKey(0)
-    
-    return 0
-# if __name__ == "__main__":
-#     main(sys.argv[1:])
+    return circles
