@@ -2,4 +2,5 @@
 - Integrate with discogs api
 - Choose what information to extract from images/discogs using parameters
 - Add records to your discogs profile automatically
+
 - Integrate a phone app that can scan the records live

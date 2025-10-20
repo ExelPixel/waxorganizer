@@ -23,5 +23,5 @@ def runAllFiles():
 
     print(f"Found {foundCount} of {fileCount} catalogueNumbers")
 
-# runOneFile("20251018_190742.jpg")
-runAllFiles()
+runOneFile("20251018_190742.jpg")
+# runAllFiles()
