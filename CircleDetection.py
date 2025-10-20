@@ -11,8 +11,8 @@ def main(imageInput):
         return -1 #TODO: Change this
 
     height, width = src.shape
-    newWidth = int(width * 0.5)
-    newHeight = int(height * 0.5)
+    newWidth = int(width * 1)
+    newHeight = int(height * 1)
     resized = cv.resize(src, (newWidth, newHeight), interpolation=cv.INTER_AREA)
     gray = cv.medianBlur(resized, 5)
     # gray = cv.GaussianBlur(gray, 7, 1.5, 1.5) 

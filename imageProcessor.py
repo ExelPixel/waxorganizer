@@ -3,7 +3,6 @@ import pytesseract
 import config as cfg
 from matplotlib import pyplot as plt
 from CircleDetection import main as detectCircle
-# from imageSkewing import deskew
 
 # cv2.imshow("Debugging", image_gray)
 # cv2.resize(image_gray, None, None, fx=2, fy=2, interpolation=INTER_AREA) #experiment with different interpolation
@@ -20,18 +19,23 @@ def loadImage(imageName):
     contrast = cv2.convertScaleAbs(grayImage, alpha = alpha, beta = beta)
     adjustedImage = deskew(contrast)
     
-    # cv2.imwrite("Output text/testimg.jpg", adjustedImage)
     return adjustedImage
 
 def deskew(image):
     circles = detectCircle(image)
-    print(circles)
-    # circle = circles[0]
-    # center = (circle[0], circle[1])
-    # radius = circle[2]
-    # print(center, radius)
-
-    return image
+    circle = circles[0][0]
+    center = (circle[0], circle[1])
+    radius = circle[2]
+    # print(f"Circle:  {circle} \nCenter:  {center} \nRadius:  {radius}")
+    #Center the image
+    x_start = center[0] - radius
+    x_end = center[0] + radius
+    y_start = center[1] - radius
+    y_end = center[1] + radius
+    cropped_image = image[y_start:y_end, x_start:x_end]
+    #Rotate image
+    deskewedImage = cropped_image
+    return deskewedImage
 
 def debuggingImage(image):
     data = pytesseract.image_to_data(image, output_type=pytesseract.Output.DICT)

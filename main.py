@@ -15,7 +15,7 @@ def runAllFiles():
     foundCount = 0
     for file in os.listdir(imageDirectory):
         filename = os.fsdecode(file)
-        catNum = runImageProcessor(filename, debuggingMode)
+        catNum = runImageProcessor(filename)
         if catNum is not None: 
             foundCount += 1
             print(catNum)
@@ -23,5 +23,5 @@ def runAllFiles():
 
     print(f"Found {foundCount} of {fileCount} catalogueNumbers")
 
-runOneFile("20251018_190742.jpg")
-# runAllFiles()
+# runOneFile("20251018_190742.jpg")
+runAllFiles()
