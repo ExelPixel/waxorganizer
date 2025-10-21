@@ -55,14 +55,14 @@ def getCatalogueNum(image):
 
     for line in newLines:
         relevantLine = stripLine(line, ignoreList)
-        print(f" Original: {line}, \nProcessed: {relevantLine}")
+        if cfg.debugOCR: print(f" Original: {line}, \nProcessed: {relevantLine}")
         hasSpecialChar = False
         hasAlpha = False
         hasNum = False
         for char in relevantLine:
-            if not char.isalnum(): 
-                hasSpecialChar = True
-                break
+            # if not char.isalnum(): 
+            #     hasSpecialChar = True
+            #     break
             if char.isalpha(): hasAlpha = True
             if char.isdigit(): hasNum = True
         if (hasAlpha and hasNum and not hasSpecialChar): 
@@ -77,11 +77,27 @@ def hasSpecialChar():
     pass
 
 def stripLine(line, ignoreList):
-    for text in ignoreList:
-        index = line.find(text)
-        if index != -1:
-            return line[:index] + line[index + len(text):]
+    newLine = ""
+    if len(line) > 1:
+        for i in range(len(line)):
+            
+            if i != 0: left = line[i-1]
+            if i != len(line)-1: right = line[i+1]
+
+            if left == " " and right == " ":
+                print("Removed")
+                continue
+            else:
+                newLine += line[i]
+    else:
+        return line
+    
     return line
+    # for text in ignoreList:
+    #     index = line.find(text)
+    #     if (index != -1 and line[index - 1] == " "):
+    #         line = line[:index] + line[index + len(text):]
+    # return line
 
 def debuggingImage(image):
     rgbImg = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)

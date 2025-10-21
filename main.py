@@ -1,12 +1,11 @@
 import os
 from imageProcessor import runImageProcessor
 
-#def loadParamsFromFile():
+#def loadParamsFromFile(): TODO Get parameters from file
 
 imageDirectory = os.fsencode("Input images/")
 
 def runOneFile(fileName):
-    # For testing individual cases
     catNum = runImageProcessor("20251018_190742.jpg")
     print(catNum)
 

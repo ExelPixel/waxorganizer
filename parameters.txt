@@ -1,0 +1,1 @@
+TODO: Add parameters here that influence what info to get from discogs
