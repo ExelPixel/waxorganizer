@@ -7,7 +7,7 @@ imageDirectory = os.fsencode("Input images/")
 
 def runOneFile(fileName):
     catNum = runImageProcessor(fileName)
-    print(catNum)
+    print(f"Catalogue number(s): {catNum}")
 
 def runAllFiles():
     fileCount = 0
@@ -17,7 +17,7 @@ def runAllFiles():
         catNum = runImageProcessor(filename)
         if catNum is not None: 
             foundCount += 1
-            print(catNum)
+            print(f"Catalogue number(s): {catNum}")
         fileCount += 1
 
     print(f"Found {foundCount} of {fileCount} catalogueNumbers")
