@@ -4,9 +4,6 @@ import config as cfg
 from matplotlib import pyplot as plt
 from CircleDetection import main as detectCircle
 
-# cv2.imshow("Debugging", image_gray)
-# cv2.resize(image_gray, None, None, fx=2, fy=2, interpolation=INTER_AREA) #experiment with different interpolation
-# cv2.waitKey(0)
 ignore = None
 
 def loadImage(imageName):
@@ -30,6 +27,7 @@ def deskewLabel(image):
     center = (circle[0], circle[1])
     radius = circle[2]
     #TODO Make sure the radius does not extend outside the image 
+
     #Center the image
     x_start = center[0] - radius
     x_end = center[0] + radius
@@ -46,9 +44,8 @@ def extractText(image):
 
 def getCatalogueNum(image):
     text = extractText(image)
-    # newLines = text.replace(" ", "").split("\n")
     newLines = text.split("\n")
-    catalogueNumber = None
+    catalogueNumber = []
     file = open("OCR_Ignore.txt")
     ignore = file.read()
     ignoreList = ignore.split(",")
@@ -56,48 +53,62 @@ def getCatalogueNum(image):
     for line in newLines:
         relevantLine = stripLine(line, ignoreList)
         if cfg.debugOCR: print(f" Original: {line}, \nProcessed: {relevantLine}")
-        hasSpecialChar = False
         hasAlpha = False
         hasNum = False
+
         for char in relevantLine:
-            # if not char.isalnum(): 
-            #     hasSpecialChar = True
-            #     break
             if char.isalpha(): hasAlpha = True
             if char.isdigit(): hasNum = True
-        if (hasAlpha and hasNum and not hasSpecialChar): 
-            catalogueNumber = relevantLine
+        if hasAlpha and hasNum: 
+            catalogueNumber.append(relevantLine)
 
-    if catalogueNumber == None:
+    if catalogueNumber == []:
         return None
     else:
         return catalogueNumber
-    
-def hasSpecialChar():
-    pass
 
-def stripLine(line, ignoreList):
+def removeSpecialChars(line):
+    newLine = ""
+    for c in line:
+        if c.isalpha() or c.isdigit() or c == "-" or c == " ":
+            newLine += c
+    return newLine
+
+def removeSingleSymbol(line):
     newLine = ""
     if len(line) > 1:
+        lastIndex = len(line)-1
         for i in range(len(line)):
-            
             if i != 0: left = line[i-1]
-            if i != len(line)-1: right = line[i+1]
+            elif i == 0: left = None
+            if i != lastIndex: right = line[i+1]
+            elif i == lastIndex: right = None
 
             if left == " " and right == " ":
-                print("Removed")
+                continue
+            elif left == None and right == " ":
+                continue
+            elif left == " " and right == None:
                 continue
             else:
                 newLine += line[i]
     else:
         return line
-    
+    return newLine
+
+def removeIgnoredSymbols(line, ignoreList):
+    for text in ignoreList:
+        index = line.find(text)
+        if (index != -1 and line[index - 1] == " "):
+            line = line[:index] + line[index + len(text):]
     return line
-    # for text in ignoreList:
-    #     index = line.find(text)
-    #     if (index != -1 and line[index - 1] == " "):
-    #         line = line[:index] + line[index + len(text):]
-    # return line
+
+def stripLine(line, ignoreList):
+    newLine = removeSpecialChars(line)
+    newLine = removeSingleSymbol(newLine)
+    newLine = removeIgnoredSymbols(newLine, ignoreList)
+    newLine = newLine.replace(" ", "")
+    return newLine
 
 def debuggingImage(image):
     rgbImg = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)

@@ -6,7 +6,7 @@ from imageProcessor import runImageProcessor
 imageDirectory = os.fsencode("Input images/")
 
 def runOneFile(fileName):
-    catNum = runImageProcessor("20251018_190742.jpg")
+    catNum = runImageProcessor(fileName)
     print(catNum)
 
 def runAllFiles():
