@@ -1,13 +1,14 @@
 import os
 from imageProcessor import runImageProcessor
 
-#def loadParamsFromFile(): TODO Get parameters from file
+#def loadParamsFromFile(): TODO: Get parameters from file
 
 imageDirectory = os.fsencode("Input images/")
 
+#TODO: Make the imageProcessor support other filetypes
 def runOneFile(fileName):
     catNum = runImageProcessor(fileName)
-    print(f"Catalogue number(s): {catNum}")
+    print(f"Catalog number(s): {catNum}")
 
 def runAllFiles():
     fileCount = 0
@@ -17,10 +18,10 @@ def runAllFiles():
         catNum = runImageProcessor(filename)
         if catNum is not None: 
             foundCount += 1
-            print(f"Catalogue number(s): {catNum}")
+            print(f"Catalog number(s): {catNum}")
         fileCount += 1
 
-    print(f"Found {foundCount} of {fileCount} catalogueNumbers")
+    print(f"Found {foundCount} of {fileCount} catalogNumbers")
 
-runOneFile("20251018_190742.jpg")
+runOneFile("1000025947.jpg")
 # runAllFiles()

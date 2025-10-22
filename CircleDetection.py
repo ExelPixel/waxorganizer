@@ -32,17 +32,18 @@ def main(imageInput):
 
     circles = np.uint16(np.around(circles))
     if cfg.debugCircleDetection:
+        debug_img = imageInput.copy()
         for i in circles[0, :]:
             center = (i[0], i[1])
             # circle center
-            cv.circle(imageInput, center, 1, (0, 0, 0), 50)
+            cv.circle(debug_img, center, 1, (0, 0, 0), 50)
             # circle outline
             radius = i[2]
-            cv.circle(imageInput, center, radius, (0, 0, 0), 10)
+            cv.circle(debug_img, center, radius, (0, 0, 0), 10)
         
         cv.namedWindow("detected circles", cv.WINDOW_NORMAL)
         cv.resizeWindow("detected circles", 600, 800)
-        cv.imshow("detected circles", imageInput)
+        cv.imshow("detected circles", debug_img)
         cv.waitKey(0)
     
     return circles
