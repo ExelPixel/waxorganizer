@@ -10,6 +10,8 @@ def getCatalogNum(text):
     for line in newLines:
         relevantLine = stripLine(line, ignoreList)
         if cfg.debugOCR: print(f" Original: {line}, \nProcessed: {relevantLine}")
+        if relevantLine == None: continue
+
         hasAlpha = False
         hasNum = False
 
@@ -19,21 +21,17 @@ def getCatalogNum(text):
         if hasAlpha and hasNum: 
             catalogNumber.append(relevantLine)
 
+        newCatNumList = []
         #TODO: Sort the list so that the catalog numbers with letters first get priority
         #Optionally accept the following order of letters/numbers: 
         #(letters, numbers) (numbers, letters, numbers) (letters, numbers, letters)?
-
-        #Optionally: Remove all strings that have overlapping elements?
-        #Example: Catalog number(s): ['VISIONCAPPEL', 'VISIONANGELS', 'REMIX600', 'ORICINALVERS', 'ONCDCASSETTE']
-        catalogNumber.sort()
-        newCatNumList = []
-        #Shortens the caralogue numbers to 12 characters/numbers
+        
         for catNum in catalogNumber: 
-            #Move this check somewhere else?
             slice = catNum[:12]
-            #Check that the string doesnt purely consist of numbers?
-            if not slice.isalpha(): 
+            if not (slice.isalpha() or slice.isdigit()): 
                 newCatNumList.append(slice)
+
+        newCatNumList.sort(reverse=True)
 
     if catalogNumber == []:
         return None
@@ -41,12 +39,44 @@ def getCatalogNum(text):
         return newCatNumList
 
 def stripLine(line, ignoreList):
-    newLine = removeSpecialChars(line)
-    newLine = removeSingleSymbol(newLine)
-    newLine = removeIgnoredSymbols(newLine, ignoreList)
-    newLine = newLine.replace(" ", "")
-    return newLine
+    #Play around with the order in which these functions execute
+    # line = removeYear(line)
+    line = removeSongNames(line)
+    if line == None: return None
+    line = removeIgnoredSymbols(line, ignoreList)
+    line = removeSpecialChars(line)
+    line = removeSingleSymbol(line)
+    line = line.replace(" ", "")
 
+    if not (line.isalpha() or line.isdigit()): 
+        return line
+    else:
+        return None
+    
+# def removeYear(line):
+#     for i in range(len(line)):
+
+#         # lastIndex = len(line)-1
+#         # if i != 0: left = line[i-1]
+#         # elif i == 0: left = ""
+#         # if i != lastIndex: right = line[i+1]
+#         # elif i == lastIndex: right = ""
+
+
+#     return line
+
+def removeSongNames(line):
+    for i in range(len(line)):
+        lastIndex = len(line)-1
+        if i != 0: left = line[i-1]
+        elif i == 0: left = ""
+        if i != lastIndex: right = line[i+1]
+        elif i == lastIndex: right = ""
+
+        if left.isdigit() and line[i] == ":" and right.isdigit():
+            return None
+    return line
+    
 def removeSpecialChars(line):
     newLine = ""
     for c in line:
@@ -80,6 +110,6 @@ def removeSingleSymbol(line):
 def removeIgnoredSymbols(line, ignoreList):
     for text in ignoreList:
         index = line.find(text)
-        if (index != -1 and line[index - 1] == " "): #TODO Check space after too
+        if index != -1:
             line = line[:index] + line[index + len(text):]
     return line

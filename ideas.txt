@@ -1,5 +1,6 @@
 - Different filetypes for images
 - Integrate with discogs api
+- If the catalog number isnt found the program asks the user to write it manually before executing any more commands
 - Choose what information to extract from images/discogs using parameters
 - Add records to your discogs profile automatically
 
