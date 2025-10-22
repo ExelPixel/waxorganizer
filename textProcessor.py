@@ -54,16 +54,13 @@ def stripLine(line, ignoreList):
         return None
     
 # def removeYear(line):
-#     for i in range(len(line)):
-
-#         # lastIndex = len(line)-1
-#         # if i != 0: left = line[i-1]
-#         # elif i == 0: left = ""
-#         # if i != lastIndex: right = line[i+1]
-#         # elif i == lastIndex: right = ""
-
-
-#     return line
+#     newLine = ""
+#     for i in range(len(line)-3):
+#         if line[i:i+3].isdigit():
+#             continue
+#         else:
+#             newLine += line[i]
+#     return newLine
 
 def removeSongNames(line):
     for i in range(len(line)):
