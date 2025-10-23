@@ -33,8 +33,22 @@ def deskewLabel(image):
     y_end = center[1] + radius
     cropped_image = image[y_start:y_end, x_start:x_end]
     #Rotate image
+    rotatedImage = rotateImage(cropped_image)
+    return rotatedImage
 
-    return cropped_image
+def rotateImage(image):
+    originalImg = image
+    
+    lines = cv2.HoughLines()
+    
+    if cfg.debugImageRotation:
+        plt.imshow(cv2.cvtColor(originalImg, cv2.COLOR_BGR2RGB))
+        plt.title("Detected Lines")
+        plt.axis("off")
+        plt.show()
+    
+    return image
+    
 
 def extractText(image):
     extracted_text = pytesseract.image_to_string(image)
