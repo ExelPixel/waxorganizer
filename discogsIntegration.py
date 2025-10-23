@@ -1,19 +1,36 @@
+import requests_oauthlib as rq
 from requests_oauthlib import OAuth1Session
 
-# discogs = OAuth1Session('client_key',
-#                             client_secret='client_secret',
-#                             resource_owner_key='resource_owner_key',
-#                             resource_owner_secret='resource_owner_secret')
-# url = 'https://api.twitter.com/1/account/settings.json'
-# r = discogs.get(url)
+def OAuth():
+    DISCOGS_CONSUMER_KEY = 'sFmZpGzWbubyXcFDLyfz'
+    DISCOGS_CONSUMER_SECRET = 'OaoOJooRfYzAldNRrHBLsdLeMBPjwacN'
+    DISCOGS_REQUEST_TOKEN_URL = 'https://api.discogs.com/oauth/request_token'
+    DISCOGS_AUTHORIZE_URL = 'https://www.discogs.com/oauth/authorize'
+    DISCOGS_ACCESS_TOKEN_URL = 'https://api.discogs.com/oauth/access_token'
 
-discogs = OAuth1Session(
-        OAuth oauth_consumer_key="your_consumer_key",
-        oauth_nonce="random_string_or_timestamp",
-        oauth_signature="your_consumer_secret&",
-        oauth_signature_method="PLAINTEXT",
-        oauth_timestamp="current_timestamp",
-        oauth_callback="your_callback"
-)
-url = 'https://api.twitter.com/1/account/settings.json'
-r = discogs.get(url)
+    discogs = OAuth1Session(
+        client_key=DISCOGS_CONSUMER_KEY,
+        client_secret=DISCOGS_CONSUMER_SECRET,
+    )
+
+    request_token = discogs.fetch_request_token(DISCOGS_REQUEST_TOKEN_URL)
+
+    authorization_url = discogs.authorization_url(DISCOGS_AUTHORIZE_URL)
+    print(f'Please go to {authorization_url} and authorize access')
+
+    verifier = input('Paste the verifier code here: ')
+
+    discogs = OAuth1Session(
+        client_key=DISCOGS_CONSUMER_KEY,
+        client_secret=DISCOGS_CONSUMER_SECRET,
+        resource_owner_key=request_token['oauth_token'],
+        resource_owner_secret=request_token['oauth_token_secret'],
+        verifier=verifier
+    )
+    return discogs.fetch_access_token(DISCOGS_ACCESS_TOKEN_URL)
+
+accessToken = OAuth()
+
+def getRecordName(catNum):
+    result = rq.get("/database/search?q={catNum}")
+    return result

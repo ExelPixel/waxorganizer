@@ -11,6 +11,7 @@ Required libraries:
 
 pip install opencv-python
 pip install pytesseract
+pip install requests requests-oauthlib
 
 Windows:
 https://github.com/UB-Mannheim/tesseract/wiki -> Tesseract OCR

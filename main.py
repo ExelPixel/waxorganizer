@@ -1,4 +1,5 @@
 import os
+from discogsIntegration import getRecordName
 from imageProcessor import runImageProcessor
 
 #def loadParamsFromFile(): TODO: Get parameters from file
@@ -9,6 +10,7 @@ imageDirectory = os.fsencode("Input images/")
 def runOneFile(fileName):
     catNum = runImageProcessor(fileName)
     print(f"Catalog number(s): {catNum}")
+    print(getRecordName(catNum))
 
 def runAllFiles():
     fileCount = 0
