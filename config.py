@@ -1,2 +1,2 @@
-debugCircleDetection = True
-debugOCR = True
+debugCircleDetection = False
+debugOCR = False

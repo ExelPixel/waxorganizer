@@ -1,4 +1,4 @@
-import requests_oauthlib as rq
+import requests as rq
 from requests_oauthlib import OAuth1Session
 
 def OAuth():
@@ -18,7 +18,8 @@ def OAuth():
     authorization_url = discogs.authorization_url(DISCOGS_AUTHORIZE_URL)
     print(f'Please go to {authorization_url} and authorize access')
 
-    verifier = input('Paste the verifier code here: ')
+    # verifier = input('Paste the verifier code here: ')
+    verifier = "uyCFdOkpPj"
 
     discogs = OAuth1Session(
         client_key=DISCOGS_CONSUMER_KEY,
@@ -32,5 +33,5 @@ def OAuth():
 accessToken = OAuth()
 
 def getRecordName(catNum):
-    result = rq.get("/database/search?q={catNum}")
+    result = rq.get(f"https://api.discogs.com/database/search?catno={catNum}&type=release")
     return result
