@@ -26,12 +26,12 @@ def getCatalogNum(text):
         #Optionally accept the following order of letters/numbers: 
         #(letters, numbers) (numbers, letters, numbers) (letters, numbers, letters)?
         
-        for catNum in catalogNumber: 
-            slice = catNum[:12]
-            if not (slice.isalpha() or slice.isdigit()): 
-                newCatNumList.append(slice)
+    for catNum in catalogNumber: 
+        slice = catNum[:12]
+        if not (slice.isalpha() or slice.isdigit()): 
+            newCatNumList.append(slice)
 
-        newCatNumList.sort(reverse=True)
+    newCatNumList.sort(reverse=True)
 
     if catalogNumber == []:
         return None

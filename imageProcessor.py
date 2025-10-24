@@ -12,10 +12,6 @@ def loadImage(imageName):
     #Adjust image
     grayImage = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(grayImage, (3,3),0)
-    # _,binary = cv2.threshold(blur,200,255,cv2.THRESH_BINARY_INV)
-    alpha = 1.7  # Contrast control
-    beta = -50   # Brightness control
-    # contrast = cv2.convertScaleAbs(blur, alpha = alpha, beta = beta)
     adjustedImage = deskewLabel(blur)
     
     return adjustedImage
