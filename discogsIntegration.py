@@ -1,37 +1,77 @@
-import requests as rq
-from requests_oauthlib import OAuth1Session
+#!/usr/bin/env python
+#
+# This illustrates the call-flow required to complete an OAuth request
+# against the discogs.com API, using python3-discogs-client libary.
+# The script will download and save a single image and perform and
+# an API search API as an example. See README.md for further documentation.
 
-def OAuth():
-    DISCOGS_CONSUMER_KEY = 'sFmZpGzWbubyXcFDLyfz'
-    DISCOGS_CONSUMER_SECRET = 'OaoOJooRfYzAldNRrHBLsdLeMBPjwacN'
-    DISCOGS_REQUEST_TOKEN_URL = 'https://api.discogs.com/oauth/request_token'
-    DISCOGS_AUTHORIZE_URL = 'https://www.discogs.com/oauth/authorize'
-    DISCOGS_ACCESS_TOKEN_URL = 'https://api.discogs.com/oauth/access_token'
+import sys
 
-    discogs = OAuth1Session(
-        client_key=DISCOGS_CONSUMER_KEY,
-        client_secret=DISCOGS_CONSUMER_SECRET,
-    )
+from dotenv import load_dotenv
+import os
 
-    request_token = discogs.fetch_request_token(DISCOGS_REQUEST_TOKEN_URL)
+import discogs_client
+from discogs_client.exceptions import HTTPError
 
-    authorization_url = discogs.authorization_url(DISCOGS_AUTHORIZE_URL)
-    print(f'Please go to {authorization_url} and authorize access')
+def auth():
 
-    # verifier = input('Paste the verifier code here: ')
-    verifier = "uyCFdOkpPj"
+    load_dotenv("consumer.env")
+    consumer_key = os.getenv("consumerKey")
+    consumer_secret = os.getenv("consumerSecret")
 
-    discogs = OAuth1Session(
-        client_key=DISCOGS_CONSUMER_KEY,
-        client_secret=DISCOGS_CONSUMER_SECRET,
-        resource_owner_key=request_token['oauth_token'],
-        resource_owner_secret=request_token['oauth_token_secret'],
-        verifier=verifier
-    )
-    return discogs.fetch_access_token(DISCOGS_ACCESS_TOKEN_URL)
+    user_agent = "waxorganizer"
 
-accessToken = OAuth()
+    discogsclient = discogs_client.Client(user_agent)
 
-def getRecordName(catNum):
-    result = rq.get(f"https://api.discogs.com/database/search?catno={catNum}&type=release")
-    return result
+    discogsclient.set_consumer_key(consumer_key, consumer_secret)
+    token, secret, url = discogsclient.get_authorize_url()
+
+    print(" == Request Token == ")
+    print(f"    * oauth_token        = {token}")
+    print(f"    * oauth_token_secret = {secret}")
+    print()
+
+    print(f"Please browse to the following URL {url}")
+
+    accepted = "n"
+    while accepted.lower() == "n":
+        print()
+        accepted = input(f"Have you authorized me at {url} [y/n] :")
+
+    oauth_verifier = input("Verification code : ")
+
+    try:
+        access_token, access_secret = discogsclient.get_access_token(oauth_verifier)
+    except HTTPError:
+        print("Unable to authenticate.")
+        sys.exit(1)
+
+    user = discogsclient.identity()
+
+    print()
+    print(" == User ==")
+    print(f"    * username           = {user.username}")
+    print(f"    * name               = {user.name}")
+    print(" == Access Token ==")
+    print(f"    * oauth_token        = {access_token}")
+    print(f"    * oauth_token_secret = {access_secret}")
+    print(" Authentication complete. Future requests will be signed with the above tokens.")
+
+    return discogsclient
+
+def getRecordName(catNumList):
+    discogsclient = auth()
+
+    for catNum in catNumList:
+        search_results = discogsclient.search(catNum, type="release")
+        print("\n== Search results for release_title=House For All ==")
+
+        for release in search_results:
+            # print(f"\n\t== discogs-id {release.id} ==")
+            # print(f'\tArtist\t: {", ".join(artist.name for artist in release.artists)}')
+            # print(f"\tTitle\t: {release.title}")
+            # print(f"\tYear\t: {release.year}")
+            # print(f'\tLabels\t: {", ".join(label.name for label in release.labels)}')
+            return release.title
+        
+    return None

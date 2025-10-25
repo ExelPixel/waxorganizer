@@ -12,9 +12,13 @@ Required libraries:
 pip install opencv-python
 pip install pytesseract
 pip install requests requests-oauthlib
+pip3 install python3-discogs-client
+pip install python-dotenv
 
 Windows:
 https://github.com/UB-Mannheim/tesseract/wiki -> Tesseract OCR
 Download using installer then add destination to path variable
 
 https://www.geeksforgeeks.org/python/text-detection-and-extraction-using-opencv-and-ocr/
+
+https://github.com/joalla/discogs_client
